@@ -22,7 +22,7 @@ jobs:
     - name: Publish
       run: dotnet publish PsbCGEnumerator -c Debug -o Build/ --no-restore
     - name: Upload
-      uses: action/upload-artifact@v4
+      uses: actions/upload-artifact@v4
       with:
         name: PsbCGEnumerator-${{ github.sha }}
         path: Build/
