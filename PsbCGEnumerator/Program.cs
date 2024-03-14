@@ -7,6 +7,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
+using System.Collections.Concurrent;
 using System.Text.Json;
 
 Console.WriteLine("""====PsbCGEnumerator====""");
@@ -50,46 +51,31 @@ using (var layerInfoFile = File.OpenRead(layerJsonFilePath))
 }
 
 $"正在枚举合并队列".I();
+var saveTaskList = new ConcurrentBag<Task>();
 var cgTrees = CGPieceTreeBuilder.Build(resx, layerInfo);
 var cfg = Configuration.Default.Clone();
 cfg.PreferContiguousImageBuffers = true;
 foreach (var cgTree in cgTrees)
 {
-    await Step(cgTree);
+    Step(cgTree);
 }
+Task.WaitAll(saveTaskList.ToArray());
 
-async Task Step(CGPiece piece)
+void Step(CGPiece piece)
 {
-    if (piece.Image == null)
-        piece.Image = await Image.LoadAsync<Rgba32>(imagePaths[piece.Layer.LayerId.ToString()]);
     if (piece.Children.Count != 0)
     {
         foreach (var child in piece.Children)
         {
-            await Step(child);
+            Step(child);
         }
-        piece.Image?.Dispose();
         return;
     }
 
-    $"正在合成{piece.Layer.Name}".I();
-    var list = new List<CGPiece>();
-    var root = piece;
-    while (root != null)
-    {
-        list.Add(root);
-        root = root.Parent;
-    }
-
-    var image = list[list.Count - 1].Image!.Clone();
-    for (var i = list.Count - 2; i >= 0; i--)
-    {
-        var pos = new Point(list[i].Layer.Left, list[i].Layer.Top);
-        image.Mutate(x => x.DrawImage(list[i].Image, pos, piece.Layer.Opacity / 255f));
-    }
-
     var saveName = Path.GetFileNameWithoutExtension(layerJsonFilePath) + $"_{piece.Layer.Name}.png";
-    await image.SaveAsPngAsync(saveName);
-    image.Dispose();
-    piece.Image?.Dispose();
+    saveTaskList.Add(Task.Run(async () =>
+    {
+        await piece.MergeImage(imagePaths);
+        piece.SavePngAndDispose(saveName);
+    }));
 }

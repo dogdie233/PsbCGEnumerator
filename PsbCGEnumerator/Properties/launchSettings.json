@@ -2,8 +2,8 @@
   "profiles": {
     "PsbCGEnumerator": {
       "commandName": "Project",
-      "commandLineArgs": "D:\\KrkrDump\\Tenshi-sz\\ev116a.resx.json",
-      "workingDirectory": "D:\\Develop\\CSharp\\PsbCGEnumerator\\PsbCGEnumerator\\bin\\Debug\\net8.0\\ev116"
+      "commandLineArgs": "../ev104a.resx.json",
+      "workingDirectory": "D:\\Develop\\CSharp\\PsbCGEnumerator\\PsbCGEnumerator\\bin\\Debug\\net8.0\\work\\output"
     }
   }
 }
