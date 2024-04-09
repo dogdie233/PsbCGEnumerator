@@ -7,7 +7,7 @@ namespace PsbCGEnumerator.Models
     public class ResxModel
     {
         // public int PsbVersion { get; set; }
-        [JsonConverter(typeof(JsonStringEnumConverter))] public PsbType PsbType { get; set; }
+        // [JsonConverter(typeof(JsonStringEnumConverter))] public string PsbType { get; set; }
         // public string Platform { get; set; } = "none";
         // public string? CryptKey { get; set; }
         // public bool ExternalTextures { get; set; } = false;
