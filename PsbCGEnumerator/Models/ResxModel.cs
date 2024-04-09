@@ -1,7 +1,3 @@
-using FreeMote;
-
-using System.Text.Json.Serialization;
-
 namespace PsbCGEnumerator.Models
 {
     public class ResxModel
