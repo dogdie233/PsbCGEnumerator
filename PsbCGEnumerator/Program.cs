@@ -1,5 +1,3 @@
-using FreeMote;
-
 using PsbCGEnumerator;
 using PsbCGEnumerator.Models;
 
@@ -29,7 +27,7 @@ using (var resxFile = File.OpenRead(resxJsonFilePath))
     }
 }
 
-if (resx.PsbType != PsbType.Pimg)
+if (resx.PsbType.ToLower() != "pimg")
     $"Psb类型必须为Pimg，当前为{resx.PsbType}".E();
 
 var imagePaths = Utils.GetImagePathDict(resxJsonFilePath, resx);
